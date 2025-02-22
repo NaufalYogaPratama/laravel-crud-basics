@@ -115,4 +115,18 @@ class AdminController extends Controller
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('admin.index')->with('success', 'Data Admin berhasil diubah');
     }
+    /**
+     * Menghapus data admin berdasarkan ID.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete($id)
+    {
+        // Hapus data admin berdasarkan ID
+        DB::delete('DELETE FROM admin WHERE id_admin = :id_admin', ['id_admin' => $id]);
+
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('admin.index')->with('success', 'Data Admin berhasil dihapus');
+    }
 }
