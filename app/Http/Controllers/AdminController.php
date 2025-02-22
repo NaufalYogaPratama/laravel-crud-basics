@@ -48,5 +48,20 @@ class AdminController extends Controller
 
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('admin.index')->with('success', 'Data Admin berhasil disimpan');
+        
+        
+    }
+    /**
+     * Menampilkan semua data admin dari tabel.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index()
+    {
+        // Mengambil semua data dari tabel admin
+        $datas = DB::select('SELECT * FROM admin');
+
+        // Mengirim data ke view admin.index
+        return view('admin.index')->with('datas', $datas);
     }
 }
