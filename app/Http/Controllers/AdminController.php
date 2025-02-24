@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Admin;
 
 class AdminController extends Controller
 {
@@ -58,10 +59,8 @@ class AdminController extends Controller
      */
     public function index()
     {
-        // Mengambil semua data dari tabel admin
-        $datas = DB::select('SELECT * FROM admin');
-
-        // Mengirim data ke view admin.index
+        // Hanya ambil data yang aktif (deleted_at = NULL)
+        $datas = Admin::all(); // Eloquent akan otomatis menyaring data aktif
         return view('admin.index')->with('datas', $datas);
     }
     /**
@@ -116,17 +115,59 @@ class AdminController extends Controller
         return redirect()->route('admin.index')->with('success', 'Data Admin berhasil diubah');
     }
     /**
-     * Menghapus data admin berdasarkan ID.
+     * Soft delete data admin berdasarkan ID.
      *
      * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delete($id)
     {
-        // Hapus data admin berdasarkan ID
-        DB::delete('DELETE FROM admin WHERE id_admin = :id_admin', ['id_admin' => $id]);
+        // Temukan data admin berdasarkan ID dan lakukan soft delete
+        $admin = Admin::find($id);
+        if ($admin) {
+            $admin->delete(); // Soft delete
+        }
 
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('admin.index')->with('success', 'Data Admin berhasil dihapus');
+    }
+    public function trash()
+    {
+        // Ambil hanya data yang di-soft delete (deleted_at != NULL)
+        $datas = Admin::onlyTrashed()->get();
+
+        // Kirim data ke view trash
+        return view('admin.trash')->with('datas', $datas);
+    }
+    /**
+     * Mengembalikan data yang di-soft delete.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($id)
+    {
+        $admin = Admin::withTrashed()->find($id);
+        if ($admin) {
+            $admin->restore(); // Kembalikan data
+        }
+
+        return redirect()->route('admin.trash')->with('success', 'Data Admin berhasil dikembalikan');
+    }
+
+    /**
+     * Menghapus data secara permanen.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function forceDelete($id)
+    {
+        $admin = Admin::withTrashed()->find($id);
+        if ($admin) {
+            $admin->forceDelete(); // Hapus permanen
+        }
+
+        return redirect()->route('admin.trash')->with('success', 'Data Admin berhasil dihapus permanen');
     }
 }

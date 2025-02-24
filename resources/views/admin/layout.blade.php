@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modul 2 Kelompok XX</title>
+    <title>Modul 2 Kelompok 31</title>
 
     <!-- Fonts -->
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
     <nav class="navbar bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('admin.index') }}">
-                Modul 2 SBD - Kelompok XX
+                Modul 2 SBD - Kelompok 31
             </a>
         </div>
     </nav>
